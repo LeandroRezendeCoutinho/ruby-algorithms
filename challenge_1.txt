@@ -1,0 +1,25 @@
+We have an hash of modules with dependencies like this:
+
+dependencies = {
+ "A" => ["B", "C"],
+ "B" => ["D", "E"],
+ "C" => [],
+ "D" => ["F"],
+ "E" => [],
+ "F" => []
+}
+Please convert it to tree-like structure of hashes:
+
+{
+  "A" => {
+    "B" => {
+      "D" => {
+        "F" => {}
+      },
+      "E" => {}
+    },
+    "C" => {}
+  }
+}
+
+
