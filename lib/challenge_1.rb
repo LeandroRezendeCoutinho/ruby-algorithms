@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-# walkt through the indexes and for each value put ir inside the index and check if the value
-# is and index too and repeat the process
-require 'debug'
+# require 'debug'
 
-# rubocop:disable Style/Documentation, Lint/MissingCopEnableDirective
-class TreeBuilder
+class TreeBuilder # rubocop:disable Style/Documentation
   attr_accessor :result
 
   def initialize
@@ -18,10 +15,10 @@ class TreeBuilder
       'F' => []
     }
     @result = {}
+    @result_keys = []
   end
 
   def call
-    # binding.break
     @dependencies.each_key do |k|
       process(k)
     end
@@ -33,21 +30,34 @@ class TreeBuilder
 
   private
 
-  def process(key)
-    # binding.break
-    node = {}
+  def process(key, parent = nil) # rubocop:disable Metrics/MethodLength
     values = @dependencies[key]
+
     values.each do |v|
-      node[key] = { v => process(v) } if @dependencies.key?(v)
+      obj = find_hash_object(parent)
+      if obj&.key?(key)
+        obj[key].merge!({ v => {} })
+      else
+        @result[key] = { v => {} }
+      end
+      @result_keys << key
+      process(v, key)
     end
+    @result_keys << key
   end
-  node
+
+  def find_hash_object(_key)
+    obj = nil
+    obj = @result.dig(*@result_keys) if @result_keys.length.positive?
+    obj
+  end
 end
 
 p = TreeBuilder.new
 p.call
 p.print_result
 
+# Expected output
 # {
 #   "A" => {
 #     "B" => {
@@ -59,3 +69,6 @@ p.print_result
 #     "C" => {}
 #   }
 # }
+#
+# Result
+# {"A"=>{"C"=>{}}, "B"=>{"E"=>{}}, "D"=>{"F"=>{}}}
