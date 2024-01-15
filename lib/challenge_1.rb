@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# require 'debug'
+require 'debug'
 
 class TreeBuilder # rubocop:disable Style/Documentation
   attr_accessor :result
@@ -30,20 +30,21 @@ class TreeBuilder # rubocop:disable Style/Documentation
 
   private
 
-  def process(key, parent = nil) # rubocop:disable Metrics/MethodLength
+  def process(key, _parent = nil) # rubocop:disable Metrics/MethodLength
+    # binding.break
     values = @dependencies[key]
 
     values.each do |v|
-      obj = find_hash_object(parent)
+      obj = find_hash_object(key)
       if obj&.key?(key)
         obj[key].merge!({ v => {} })
       else
         @result[key] = { v => {} }
       end
-      @result_keys << key
+      @result_keys |= [key]
       process(v, key)
     end
-    @result_keys << key
+    @result_keys |= [key]
   end
 
   def find_hash_object(_key)
@@ -71,4 +72,4 @@ p.print_result
 # }
 #
 # Result
-# {"A"=>{"C"=>{}}, "B"=>{"E"=>{}}, "D"=>{"F"=>{}}}
+{ 'A' => { 'C' => {} }, 'B' => { 'E' => {} }, 'D' => { 'F' => {} } }
