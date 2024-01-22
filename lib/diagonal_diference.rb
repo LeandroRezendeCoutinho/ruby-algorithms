@@ -91,6 +91,7 @@ def diagonal_difference(arr) # rubocop:disable Metrics/MethodLength,Metrics/AbcS
   (first_results.sum - second_results.sum).abs
 end
 
+# fazer o método pegar o maior array que tenha mais de um array
 def internal_arrays_max_length(arr)
   y = 0 if y.nil?
   arr.each do |x|
@@ -102,13 +103,3 @@ end
 result = diagonal_difference arr
 
 puts result
-
-# arr = [[3],
-#        [11, 2, 4],
-#        [4, 5, 6],
-#        [10, 8, -12]]
-
-# maior_array = arr.max { |subarray| subarray.length }
-
-# puts "O maior array é: #{maior_array}"
-# puts "Com #{maior_array.length} elementos."
